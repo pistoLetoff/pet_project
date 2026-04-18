@@ -25,7 +25,12 @@ public static class SceneSetup
         var camera = Camera.main;
         if (camera == null)
         {
-            Debug.LogWarning("[SceneSetup] No MainCamera in scene.");
+            Debug.LogWarning("[SceneSetup] No MainCamera tagged. Looking for any Camera...");
+            camera = Object.FindFirstObjectByType<Camera>();
+        }
+        if (camera == null)
+        {
+            Debug.LogError("[SceneSetup] No camera in scene at all.");
             return;
         }
 
@@ -79,21 +84,34 @@ public static class SceneSetup
         }
 
         Undo.RecordObject(bg.transform, "Position Background");
-        bg.transform.position = new Vector3(0f, 3.5f, 0f);
+        bg.transform.position = new Vector3(0f, 3.57f, 0f);
         bg.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-        bg.transform.localScale = new Vector3(10.65f, 7.1f, 1f);
+        bg.transform.localScale = new Vector3(10.652574f, 7.1017156f, 0.7101716f);
 
         var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(BackgroundPath);
-        if (texture == null)
+        Debug.Log($"[SceneSetup] Texture load from '{BackgroundPath}': {(texture == null ? "NULL" : texture.name + " " + texture.width + "x" + texture.height)}");
+        if (texture == null) return;
+
+        var renderer = bg.GetComponent<MeshRenderer>();
+        if (renderer == null)
         {
-            Debug.LogWarning("[SceneSetup] Background not found at " + BackgroundPath);
+            Debug.LogError("[SceneSetup] Background has no MeshRenderer.");
             return;
         }
 
-        var renderer = bg.GetComponent<MeshRenderer>();
-        var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Texture");
+        Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (shader == null) shader = Shader.Find("Sprites/Default");
+        if (shader == null) shader = Shader.Find("Unlit/Texture");
+        Debug.Log($"[SceneSetup] Picked shader: {(shader != null ? shader.name : "NULL")}");
+        if (shader == null) return;
+
         var mat = new Material(shader) { mainTexture = texture };
+        // URP/Unlit: render both sides so a wrong-side rotation still shows.
+        if (mat.HasProperty("_Cull")) mat.SetFloat("_Cull", 0f);
+        if (mat.HasProperty("_BaseMap")) mat.SetTexture("_BaseMap", texture);
+        if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", Color.white);
         renderer.sharedMaterial = mat;
+        Debug.Log($"[SceneSetup] Background ready at {bg.transform.position}, scale {bg.transform.localScale}, rot {bg.transform.rotation.eulerAngles}");
     }
 
     private static void PlaceHeroes()
@@ -104,14 +122,14 @@ public static class SceneSetup
         if (vampire != null)
         {
             Undo.RecordObject(vampire.transform, "Place Vampire");
-            vampire.transform.position = new Vector3(0f, 0f, -3f);
-            vampire.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            vampire.transform.position = new Vector3(0.34f, 2.42f, -3.46f);
+            vampire.transform.rotation = Quaternion.identity;
         }
         if (witch != null)
         {
             Undo.RecordObject(witch.transform, "Place Witch");
-            witch.transform.position = new Vector3(0f, 0f, -4.2f);
-            witch.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            witch.transform.position = new Vector3(0f, 3.42f, -2.33f);
+            witch.transform.rotation = Quaternion.identity;
         }
     }
 

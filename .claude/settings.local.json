@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Program Files/Unity/Hub/Editor//**)",
+      "Read(//c/Program Files/Unity Hub//**)",
+      "Bash(\"/c/Program Files/Unity/Hub/Editor/6000.3.2f1/Editor/Unity.exe\" -projectPath \"A:\\\\pet_project\")",
+      "Bash(explorer.exe \"/c/Program Files/Unity/Hub/Editor/6000.3.2f1/Editor/Unity.exe\")",
+      "Bash(powershell -NoProfile -Command \"\\(New-Object -ComObject Shell.Application\\).ShellExecute\\('C:\\\\Program Files\\\\Unity\\\\Hub\\\\Editor\\\\6000.3.2f1\\\\Editor\\\\Unity.exe', '-projectPath \\\\\"A:\\\\pet_project\\\\\"', '', 'open', 1\\)\")",
+      "Bash(tasklist)",
+      "Bash(powershell -NoProfile -Command 'Add-Type -AssemblyName System.Windows.Forms; $img = [System.Windows.Forms.Clipboard]::GetImage\\(\\); if \\($img\\) { $img.Save\\('\\\\''A:\\\\pet_project\\\\Assets\\\\Backgrounds\\\\cemetery.png'\\\\''\\); Write-Output '\\\\''SAVED'\\\\'' } else { Write-Output '\\\\''NO_IMAGE_IN_CLIPBOARD'\\\\'' }')",
+      "Bash(explorer.exe \"A:\\\\pet_project\\\\Assets\\\\Backgrounds\")",
+      "Bash(cmd //c start \"\" \"A:\\\\pet_project\\\\Assets\\\\Backgrounds\")",
+      "Bash(git check-ignore *)",
+      "Bash(git restore *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
